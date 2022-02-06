@@ -146,4 +146,5 @@ dist
 
 # Custom
 .history
-.misc
+misc
+src/setting
