@@ -10,9 +10,13 @@
   "author": "airRnot1106 <yngw.rintaro@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "iconv": "^3.0.1",
+    "jschardet": "^3.0.0",
+    "litargs": "^0.2.0",
     "properties-reader": "^2.2.0"
   },
   "devDependencies": {
+    "@types/iconv": "^3.0.1",
     "@types/node": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
