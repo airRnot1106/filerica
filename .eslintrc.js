@@ -5,11 +5,7 @@ module.exports = {
     env: {
         node: true,
     },
-    extends: [
-        'eslint:recommended',
-        'plugin:@typescript-eslint/recommended',
-        'prettier',
-    ],
+    extends: ['eslint:all', 'plugin:@typescript-eslint/all', 'prettier'],
     rules: {
         '@typescript-eslint/no-empty-function': [
             'error',
@@ -18,6 +14,10 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': [
             'error',
             { argsIgnorePattern: '^_' },
+        ],
+        '@typescript-eslint/no-unnecessary-condition': [
+            'error',
+            { allowConstantLoopConditions: true },
         ],
     },
 };
