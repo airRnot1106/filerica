@@ -3,6 +3,7 @@ import fs from 'fs';
 export interface Board {
     name: string;
     path: string;
+    separator: string;
     isSelected: boolean;
 }
 
@@ -200,6 +201,12 @@ export class Setting {
         selected.isSelected = false;
         target.isSelected = true;
         this.updateBoards([selected, target]);
+    }
+
+    static changeSeparator(separator: string) {
+        const selected = this.getSelectedBoard();
+        selected.separator = separator;
+        this.updateBoard(selected);
     }
 
     static updateBoard(newBoard: Board) {

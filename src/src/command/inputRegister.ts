@@ -11,5 +11,6 @@ export class InputRegister extends AbsCommand {
 
     execute(): void {
         Setting.changeInputPath(this._path);
+        console.log(`Changed the InputPath to '${this._path}'`);
     }
 }

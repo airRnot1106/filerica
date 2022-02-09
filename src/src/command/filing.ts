@@ -40,8 +40,9 @@ export class Filing extends AbsCommand {
         const InvalidItems = inputItems.filter(
             (item) =>
                 !targetDirNames.includes(item.class) &&
-                ignoreFiles.includes(item.fullName)
+                !ignoreFiles.includes(item.fullName)
         );
+        let itemsCountSucceededToMove = 0;
         validItems.forEach((item, index, array) => {
             const timesArray = item.itemName.match(/[1-9]\d*/);
             if (!timesArray) {
@@ -56,7 +57,11 @@ export class Filing extends AbsCommand {
             if (!existsParentPath) fs.mkdirSync(parentPath);
             fs.renameSync(item.inputPath, fullPath);
             console.log(`'${item.fullName}' has been successfully moved`);
+            itemsCountSucceededToMove++;
         });
+        console.log(
+            `${itemsCountSucceededToMove} items have been successfully moved`
+        );
         if (InvalidItems.length) {
             console.log('--------');
             console.log('Failed to move the following items');

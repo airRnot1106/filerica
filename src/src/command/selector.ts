@@ -38,13 +38,16 @@ export class Selector extends AbsCommand {
                 return answer;
             }
         })();
-        if (answer === -1) return;
+        if (answer === -1) {
+            console.log('Canceled');
+            return;
+        }
         const target = boards[answer];
         this._save(target);
     }
 
     private _save(target: Board) {
         Setting.selectBoard(target);
-        console.log(`Board '${target.name}' was selected.`);
+        console.log(`Board '${target.name}' was selected`);
     }
 }
