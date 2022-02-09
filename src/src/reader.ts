@@ -80,6 +80,7 @@ export class Reader {
                     display();
                 } else if (key.equals(ENTER)) {
                     process.stdout.moveCursor(-9999, -tmpChoices.length);
+                    process.stdout.clearLine(0);
                     process.stdin.emit('end');
                 }
             });
