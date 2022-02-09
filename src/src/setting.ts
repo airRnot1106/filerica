@@ -27,11 +27,19 @@ export class Setting {
     static async initialize() {
         this._isInitialized = true;
         const existsSettingDir = fs.existsSync(this._SETTING_DIR_PATH);
-        if (!existsSettingDir) {
-            fs.mkdirSync(this._SETTING_DIR_PATH);
-            const existsTmpDir = fs.existsSync(this._SETTING_TMP_DIR_PATH);
-            if (!existsTmpDir) fs.mkdirSync(this._SETTING_TMP_DIR_PATH);
-            const initJson: SettingFile = { inputPath: 'hoge', boards: [] };
+        if (!existsSettingDir) fs.mkdirSync(this._SETTING_DIR_PATH);
+        const existsTmpDir = fs.existsSync(this._SETTING_TMP_DIR_PATH);
+        if (!existsTmpDir) fs.mkdirSync(this._SETTING_TMP_DIR_PATH);
+        const existsSettingFile = fs.existsSync(this._SETTING_FILE_PATH);
+        if (!existsSettingFile) {
+            const DOWNLOADS_DIR_PATH =
+                process.env[
+                    process.platform == 'win32' ? 'USERPROFILE' : 'HOME'
+                ];
+            const initJson: SettingFile = {
+                inputPath: `${DOWNLOADS_DIR_PATH}/downloads`,
+                boards: [],
+            };
             await this._write(initJson).catch(() => {
                 throw new Error('Fatal Error');
             });
@@ -127,6 +135,10 @@ export class Setting {
 
     static async save() {
         await this._write(this._cache);
+    }
+
+    static getInputPath() {
+        return this._cache.inputPath;
     }
 
     static changeInputPath(newPath: string) {

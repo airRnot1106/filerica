@@ -5,12 +5,20 @@ import { BoardRegister } from './command/boardRegister';
 import { Remover } from './command/remover';
 import { Selector } from './command/selector';
 import { Setting } from './setting';
+import { Filing } from './command/filing';
+import { InputRegister } from './command/inputRegister';
 
 (async () => {
     await Setting.initialize();
-    Litargs.command('e', 0, { detail: 'Execute filing' }, (_args, _option) => {
-        console.log('test');
-    })
+    Litargs.command(
+        'execute',
+        0,
+        { detail: 'Execute filing' },
+        (_args, _option) => {
+            return new Filing();
+        }
+    )
+        .alias('e')
         .command(
             'board',
             2,
@@ -22,6 +30,7 @@ import { Setting } from './setting';
                 const rm = option.rm;
                 if (rm) return new Remover(name);
                 if (!name || !path) {
+                    Litargs.help();
                     return;
                 }
                 const s = Boolean(option.s);
@@ -40,12 +49,18 @@ import { Setting } from './setting';
         })
         .alias('s')
         .option('n', 1, { args: ['name'], detail: 'Specify by name' })
+        .command(
+            'input',
+            1,
+            { args: ['inputPath'], detail: 'Change inputPath.' },
+            (args, _option) => {
+                return new InputRegister(args[0]);
+            }
+        )
+        .alias('i')
         .parse(process.argv.slice(2).join(' '));
     const command = Litargs.execute();
-    if (!(command instanceof AbsCommand)) {
-        Litargs.help();
-        return;
-    }
+    if (!(command instanceof AbsCommand)) return;
     try {
         await command.execute();
     } catch (error) {
