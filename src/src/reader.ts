@@ -31,7 +31,6 @@ export class Reader {
             //よくわからないけどこれがあると動く
             const reader = Readline.createInterface({
                 input: process.stdin,
-                output: process.stdout,
             });
             const tmpChoices = [...choices];
             let cursor = 0;
@@ -80,8 +79,7 @@ export class Reader {
                     moveCursor(1);
                     display();
                 } else if (key.equals(ENTER)) {
-                    process.stdout.moveCursor(-9999, -1);
-                    display();
+                    process.stdout.moveCursor(-9999, -tmpChoices.length);
                     process.stdin.emit('end');
                 }
             });
