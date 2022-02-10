@@ -1,3 +1,4 @@
+import { Logger } from '../logger';
 import { Setting } from '../setting';
 import { AbsCommand } from './absCommand';
 
@@ -12,8 +13,6 @@ export class SeparatorRegister extends AbsCommand {
     execute(): void {
         Setting.changeSeparator(this._separator);
         const selected = Setting.getSelectedBoard();
-        console.log(
-            `Changed the separator of board '${selected.name}' to '${this._separator}'`
-        );
+        Logger.log('SP_RESULT', selected.name, this._separator);
     }
 }

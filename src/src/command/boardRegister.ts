@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { Logger } from '../logger';
 import { Board, Setting } from '../setting';
 import { AbsCommand } from './absCommand';
 import { Selector } from './selector';
@@ -25,7 +26,7 @@ export class BoardRegister extends AbsCommand {
             isSelected: false,
         };
         Setting.appendBoard(board);
-        console.log(`Board '${this._name}' has been created`);
+        Logger.log('BR_RESULT', this._name);
         if (!this._isSelect) return;
         new Selector(this._name).execute();
     }

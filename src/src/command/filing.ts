@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { Logger } from '../logger';
 import { Setting } from '../setting';
 import { AbsCommand } from './absCommand';
 
@@ -56,19 +57,17 @@ export class Filing extends AbsCommand {
             const existsParentPath = fs.existsSync(parentPath);
             if (!existsParentPath) fs.mkdirSync(parentPath);
             fs.renameSync(item.inputPath, fullPath);
-            console.log(`'${item.fullName}' has been successfully moved`);
+            Logger.log('FL_PER_ITEM_RESULT', item.fullName);
             itemsCountSucceededToMove++;
         });
-        console.log(
-            `${itemsCountSucceededToMove} items have been successfully moved`
-        );
+        Logger.log('FL_TOTAL_ITEM_RESULT', `${itemsCountSucceededToMove}`);
         if (InvalidItems.length) {
-            console.log('--------');
-            console.log('Failed to move the following items');
+            Logger.log('HR');
+            Logger.log('FL_FAILED_ITEM_RESULT_HEADER');
         }
 
         for (const item of InvalidItems) {
-            console.log(item.fullName);
+            Logger.log('FL_FAILED_ITEM_RESULT_BODY', item.fullName);
         }
     }
 }

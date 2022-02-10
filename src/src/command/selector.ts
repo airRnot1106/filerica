@@ -1,3 +1,4 @@
+import { Logger } from '../logger';
 import { Reader } from '../reader';
 import { Board, Setting } from '../setting';
 import { AbsCommand } from './absCommand';
@@ -28,8 +29,8 @@ export class Selector extends AbsCommand {
         const choices = boards.map((board) => board.name);
         const answer = await (async () => {
             while (true) {
-                console.log('--------');
-                console.log('Select a board:');
+                Logger.log('HR');
+                Logger.log('SL_HEAD');
                 const answer = await Reader.select(choices, {
                     allowCancel: true,
                     shouldGiveNumber: true,
@@ -39,7 +40,7 @@ export class Selector extends AbsCommand {
             }
         })();
         if (answer === -1) {
-            console.log('Canceled');
+            Logger.log('CANCEL');
             return;
         }
         const target = boards[answer];
@@ -48,6 +49,6 @@ export class Selector extends AbsCommand {
 
     private _save(target: Board) {
         Setting.selectBoard(target);
-        console.log(`Board '${target.name}' was selected`);
+        Logger.log('SL_RESULT', target.name);
     }
 }

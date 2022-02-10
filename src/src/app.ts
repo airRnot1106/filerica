@@ -8,6 +8,7 @@ import { Setting } from './setting';
 import { Filing } from './command/filing';
 import { InputRegister } from './command/inputRegister';
 import { SeparatorRegister } from './command/separatorRegister';
+import { Logger } from './logger';
 
 (async () => {
     await Setting.initialize();
@@ -87,10 +88,9 @@ import { SeparatorRegister } from './command/separatorRegister';
     try {
         await command.execute();
     } catch (error) {
-        if (error instanceof Error) {
-            console.error(error.message);
-        } else {
-            console.error(error);
+        if (Array.isArray(error)) {
+            const [intent, ...args] = error;
+            Logger.error(intent, ...args);
         }
     }
 })();

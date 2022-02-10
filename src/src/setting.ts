@@ -8,6 +8,7 @@ export interface Board {
 }
 
 export interface SettingFile {
+    language: 'en' | 'ja';
     inputPath: string;
     boards: Board[];
 }
@@ -38,6 +39,7 @@ export class Setting {
                     process.platform == 'win32' ? 'USERPROFILE' : 'HOME'
                 ];
             const initJson: SettingFile = {
+                language: 'en',
                 inputPath: `${DOWNLOADS_DIR_PATH}/downloads`,
                 boards: [],
             };
@@ -49,8 +51,7 @@ export class Setting {
     }
 
     private static _checkIsInitialized() {
-        if (!this._isInitialized)
-            throw new Error('Setting has not been initialized');
+        if (!this._isInitialized) throw ['ST_INIT_ERROR'];
     }
 
     private static _isValidSettingFile(object: object): object is SettingFile {
@@ -64,9 +65,9 @@ export class Setting {
 
     private static _validateDirPath(path: string) {
         const isValidPath = fs.existsSync(path);
-        if (!isValidPath) throw new Error(`Invalid path '${path}'`);
+        if (!isValidPath) throw ['ST_INVALID_PATH_ERROR', path];
         const stat = fs.statSync(path);
-        if (!stat.isDirectory()) throw Error(`Not a directory path '${path}'`);
+        if (!stat.isDirectory()) throw ['ST_INVALID_DIR_ERROR', path];
     }
 
     private static _read() {
@@ -86,7 +87,7 @@ export class Setting {
                 try {
                     const json = JSON.parse(cache);
                     if (!this._isValidSettingFile(json))
-                        throw new Error('Invalid Setting File');
+                        throw ['ST_INVALID_ST_FILE_ERROR'];
                     resolve(json);
                 } catch (error) {
                     //If the JSON parsing fails
@@ -138,6 +139,14 @@ export class Setting {
         await this._write(this._cache);
     }
 
+    static getLanguage() {
+        return this._cache.language;
+    }
+
+    static changeLanguage(newLang: SettingFile['language']) {
+        this._cache.language = newLang;
+    }
+
     static getInputPath() {
         return this._cache.inputPath;
     }
@@ -156,22 +165,21 @@ export class Setting {
     static getBoardByName(name: string) {
         const boards = this.getBoards();
         const target = boards.find((board) => board.name === name);
-        if (!target) throw new Error(`Board '${name}' is does not exist`);
+        if (!target) throw ['ST_NOT_EXISTS_BOARD_ERROR', name];
         return { ...target };
     }
 
     static getBoardIndexByName(name: string) {
         const boards = this.getBoards();
         const targetIndex = boards.findIndex((board) => board.name === name);
-        if (targetIndex === -1)
-            throw new Error(`Board '${name}' is does not exist`);
+        if (targetIndex === -1) throw ['ST_NOT_EXISTS_BOARD_ERROR', name];
         return targetIndex;
     }
 
     static getSelectedBoard() {
         const boards = this.getBoards();
         const target = boards.find((board) => board.isSelected);
-        if (!target) throw new Error('No Board Selected');
+        if (!target) throw ['ST_NOT_SELECTED_BOARD_ERROR'];
         return { ...target };
     }
 
@@ -181,7 +189,7 @@ export class Setting {
             (board) => board.name === newBoard.name
         );
         if (isAlreadyExists)
-            throw new Error(`Board '${newBoard.name}' already exists`);
+            throw ['ST_ALREADY_EXISTS_BOARD_ERROR', newBoard.name];
         this._validateDirPath(newBoard.path);
         this._cache.boards.push(newBoard);
     }
@@ -190,9 +198,10 @@ export class Setting {
         const targetIndex = this.getBoardIndexByName(target.name);
         const selected = this.getSelectedBoard();
         if (target.name === selected.name)
-            throw new Error(
-                `You cannot remove the currently selected board '${this._cache.boards[targetIndex].name}'`
-            );
+            throw [
+                'ST_REMOVE_CURT_BOARD_ERROR',
+                this._cache.boards[targetIndex].name,
+            ];
         this._cache.boards.splice(targetIndex, 1);
     }
 

@@ -1,3 +1,4 @@
+import { Logger } from '../logger';
 import { Setting } from '../setting';
 import { AbsCommand } from './absCommand';
 
@@ -11,6 +12,6 @@ export class InputRegister extends AbsCommand {
 
     execute(): void {
         Setting.changeInputPath(this._path);
-        console.log(`Changed the InputPath to '${this._path}'`);
+        Logger.log('IR_RESULT', this._path);
     }
 }

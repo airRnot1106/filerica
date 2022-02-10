@@ -28,7 +28,6 @@ export class Reader {
         option: SelectOption = { allowCancel: false, shouldGiveNumber: false }
     ) {
         return new Promise<number>((resolve, _reject) => {
-            //よくわからないけどこれがあると動く
             const reader = Readline.createInterface({
                 input: process.stdin,
             });

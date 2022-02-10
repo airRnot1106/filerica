@@ -1,3 +1,4 @@
+import { Logger } from '../logger';
 import { Setting } from '../setting';
 import { AbsCommand } from './absCommand';
 
@@ -14,6 +15,6 @@ export class Displayer extends AbsCommand {
                     board.path
                 }`
         );
-        console.log(list.join('\n'));
+        Logger.log('DP_LIST', list.join('\n'));
     }
 }
