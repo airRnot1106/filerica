@@ -7,7 +7,7 @@ export class Displayer extends AbsCommand {
         super();
     }
 
-    async execute(): Promise<void> {
+    execute(): void {
         const boards = Setting.getBoards();
         const list = boards.map(
             (board, index) =>

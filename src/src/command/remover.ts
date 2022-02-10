@@ -9,7 +9,7 @@ export class Remover extends AbsCommand {
         this._name = name;
     }
 
-    async execute(): Promise<void> {
+    execute(): void {
         const target = Setting.getBoardByName(this._name);
         Setting.removeBoard(target);
     }

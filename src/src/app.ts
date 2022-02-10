@@ -9,6 +9,7 @@ import { Filing } from './command/filing';
 import { InputRegister } from './command/inputRegister';
 import { SeparatorRegister } from './command/separatorRegister';
 import { Logger } from './logger';
+import { LanguageRegister } from './command/languageRegister';
 
 (async () => {
     await Setting.initialize();
@@ -82,6 +83,15 @@ import { Logger } from './logger';
         .option('rs', 0, {
             detail: 'Resets the separator to the default blank space',
         })
+        .command(
+            'langage',
+            0,
+            { detail: 'Change language' },
+            (_args, _option) => {
+                return new LanguageRegister();
+            }
+        )
+        .alias('l')
         .parse(process.argv.slice(2).join(' '));
     const command = Litargs.execute();
     if (!(command instanceof AbsCommand)) return;
