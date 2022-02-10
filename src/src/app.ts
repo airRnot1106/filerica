@@ -84,7 +84,7 @@ import { LanguageRegister } from './command/languageRegister';
             detail: 'Resets the separator to the default blank space',
         })
         .command(
-            'langage',
+            'language',
             0,
             { detail: 'Change language' },
             (_args, _option) => {
