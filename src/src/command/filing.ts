@@ -43,6 +43,8 @@ export class Filing extends AbsCommand {
                 !targetDirNames.includes(item.class) &&
                 !ignoreFiles.includes(item.fullName)
         );
+        Logger.log('FL_HEADER');
+        Logger.log('HR');
         let itemsCountSucceededToMove = 0;
         validItems.forEach((item, index, array) => {
             const timesArray = item.itemName.match(/[1-9]\d*/);
@@ -60,14 +62,15 @@ export class Filing extends AbsCommand {
             Logger.log('FL_PER_ITEM_RESULT', item.fullName);
             itemsCountSucceededToMove++;
         });
+        Logger.log('HR');
         Logger.log('FL_TOTAL_ITEM_RESULT', `${itemsCountSucceededToMove}`);
-        if (InvalidItems.length) {
-            Logger.log('HR');
-            Logger.log('FL_FAILED_ITEM_RESULT_HEADER');
-        }
-
+        if (!InvalidItems.length) return;
+        Logger.log('BR');
+        Logger.log('FL_FAILED_ITEM_RESULT_HEADER');
+        Logger.log('HR');
         for (const item of InvalidItems) {
             Logger.log('FL_FAILED_ITEM_RESULT_BODY', item.fullName);
         }
+        Logger.log('HR');
     }
 }

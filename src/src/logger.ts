@@ -1,6 +1,7 @@
 import { Setting, SettingFile } from './setting';
 
 export type LogIntent =
+    | 'BR'
     | 'HR'
     | 'CANCEL'
     | 'ST_INIT_ERROR'
@@ -20,6 +21,7 @@ export type LogIntent =
     | 'DP_LIST'
     | 'SL_HEAD'
     | 'SL_RESULT'
+    | 'FL_HEADER'
     | 'FL_PER_ITEM_RESULT'
     | 'FL_TOTAL_ITEM_RESULT'
     | 'FL_FAILED_ITEM_RESULT_HEADER'
@@ -37,6 +39,10 @@ export class Logger {
     private static _currentLanguage: SettingFile['language'];
 
     private static _logTable: LogTable = {
+        BR: {
+            en: '',
+            ja: '',
+        },
         HR: {
             en: '----------------',
             ja: '----------------',
@@ -113,21 +119,25 @@ export class Logger {
             en: `Board '${this._symbol}0' was selected`,
             ja: `ボード'${this._symbol}0'が選択されました`,
         },
+        FL_HEADER: {
+            en: 'Launch filing...',
+            ja: 'ファイリングを実行します...',
+        },
         FL_PER_ITEM_RESULT: {
-            en: `'${this._symbol}0' has been successfully moved`,
-            ja: `'${this._symbol}0'の移動に成功しました`,
+            en: `\t'${this._symbol}0' has been successfully moved`,
+            ja: `\t'${this._symbol}0'の移動に成功しました`,
         },
         FL_TOTAL_ITEM_RESULT: {
             en: `${this._symbol}0 items have been successfully moved`,
-            ja: `'${this._symbol}0'このアイテムの移動に成功しました`,
+            ja: `${this._symbol}0個のアイテムの移動に成功しました`,
         },
         FL_FAILED_ITEM_RESULT_HEADER: {
             en: 'Failed to move the following items',
             ja: '以下のアイテムの移動に失敗しました',
         },
         FL_FAILED_ITEM_RESULT_BODY: {
-            en: `${this._symbol}0`,
-            ja: `${this._symbol}0`,
+            en: `\t'${this._symbol}0'`,
+            ja: `\t'${this._symbol}0'`,
         },
         LA_RESULT: {
             en: `Changed language to '${this._symbol}0'`,
