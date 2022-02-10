@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { Logger } from './logger';
+import { Reader } from './reader';
 
 export interface Board {
     name: string;
@@ -47,7 +49,12 @@ export class Setting {
                 throw new Error('Fatal Error');
             });
         }
-        this._cache = await this._read();
+        this._cache = await this._read().catch(async () => {
+            return await this._restoreSettingFile().catch((error) => {
+                Logger.error(error);
+                process.exit(1);
+            });
+        });
     }
 
     private static _checkIsInitialized() {
@@ -55,7 +62,11 @@ export class Setting {
     }
 
     private static _isValidSettingFile(object: object): object is SettingFile {
-        const properties: (keyof SettingFile)[] = ['inputPath', 'boards'];
+        const properties: (keyof SettingFile)[] = [
+            'language',
+            'inputPath',
+            'boards',
+        ];
         for (const property of properties) {
             if (!Object.prototype.hasOwnProperty.call(object, property))
                 return false;
@@ -109,24 +120,11 @@ export class Setting {
             ws.write(JSON.stringify(json, null, 4));
             ws.end();
 
-            ws.on('finish', () => {
-                const ts = fs.createReadStream(this._SETTING_TMP_FILE_PATH, {
-                    highWaterMark: 64,
-                });
-                const ds = fs.createWriteStream(this._SETTING_FILE_PATH);
-                ts.pipe(ds);
-
-                ds.on('finish', () => {
-                    resolve();
-                });
-
-                ts.on('error', (error) => {
-                    ds.destroy(error);
-                });
-
-                ds.on('error', (error) => {
+            ws.on('finish', async () => {
+                await this._copy().catch((error) => {
                     ws.emit('error', error);
                 });
+                resolve();
             });
 
             ws.on('error', (error) => {
@@ -135,12 +133,49 @@ export class Setting {
         });
     }
 
+    private static _copy() {
+        return new Promise<void>((resolve, reject) => {
+            const ts = fs.createReadStream(this._SETTING_TMP_FILE_PATH, {
+                highWaterMark: 64,
+            });
+            const ds = fs.createWriteStream(this._SETTING_FILE_PATH);
+            ts.pipe(ds);
+
+            ds.on('finish', () => {
+                resolve();
+            });
+
+            ts.on('error', (error) => {
+                ds.destroy(error);
+            });
+
+            ds.on('error', (error) => {
+                reject(error);
+            });
+        });
+    }
+
+    private static async _restoreSettingFile() {
+        Logger.log('ST_RESTORE_HEADER');
+        const answer = await Reader.select(['Yes', 'No']);
+        if (answer === 1) throw ['ST_INVALID_ST_FILE_ERROR'];
+        await this._copy().catch(() => {
+            throw ['ST_RESTORE_FAILURE'];
+        });
+        const tmp = await this._read().catch(() => {
+            throw ['ST_RESTORE_FAILURE'];
+        });
+        if (!this._isValidSettingFile(tmp)) throw ['ST_INVALID_ST_FILE_ERROR'];
+        Logger.log('ST_RESTORE_SUCCESSFUL');
+        return tmp;
+    }
+
     static async save() {
         await this._write(this._cache);
     }
 
     static getLanguage() {
-        return this._cache.language;
+        return this._cache?.language ?? 'en';
     }
 
     static changeLanguage(newLang: SettingFile['language']) {
