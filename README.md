@@ -20,6 +20,10 @@
 
 -   Especially recommended for students
 
+## Requirement
+
+**Node version 16.x or higher is required.**
+
 ## Install
 
 ```sh
