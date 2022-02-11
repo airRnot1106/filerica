@@ -241,10 +241,15 @@ export class Setting {
     }
 
     static selectBoard(target: Board) {
-        const selected = this.getSelectedBoard();
-        selected.isSelected = false;
-        target.isSelected = true;
-        this.updateBoards([selected, target]);
+        try {
+            const selected = this.getSelectedBoard();
+            selected.isSelected = false;
+            target.isSelected = true;
+            this.updateBoards([selected, target]);
+        } catch (error) {
+            target.isSelected = true;
+            this.updateBoard(target);
+        }
     }
 
     static changeSeparator(separator: string) {
