@@ -42,7 +42,9 @@ export class Setting {
                 ];
             const initJson: SettingFile = {
                 language: 'en',
-                inputPath: `${DOWNLOADS_DIR_PATH}/downloads`,
+                inputPath: `${DOWNLOADS_DIR_PATH}${
+                    process.platform == 'win32' ? '\\' : '/'
+                }downloads`,
                 boards: [],
             };
             await this._write(initJson).catch(() => {
