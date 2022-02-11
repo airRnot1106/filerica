@@ -78,8 +78,10 @@ export class Reader {
                     moveCursor(1);
                     display();
                 } else if (key.equals(ENTER)) {
-                    process.stdout.moveCursor(-9999, -tmpChoices.length);
-                    process.stdout.clearLine(0);
+                    tmpChoices.forEach(() => {
+                        process.stdout.moveCursor(-9999, -1);
+                        process.stdout.clearLine(0);
+                    });
                     process.stdin.emit('end');
                 }
             });

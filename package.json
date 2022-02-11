@@ -3,6 +3,9 @@
     "version": "0.0.2",
     "description": "CLI for easy file classification",
     "main": "dist/src/app.js",
+    "engines": {
+        "node": "16.x"
+    },
     "preferGlobal": true,
     "bin": {
         "filerica": "dist/src/app.js"
